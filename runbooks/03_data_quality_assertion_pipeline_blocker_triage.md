@@ -65,3 +65,22 @@ In production systems, this incident typically originates from sudden traffic su
 - [ ] Pipeline metrics return to baseline with 0 active error alerts.
 - [ ] Processing latency conforms to standard production SLAs.
 - [ ] Postmortem root cause documented and shared with architecture leads.
+
+
+---
+
+## 5. Automated LLM Evaluation Gate Failure Triage (GenAIOps CI/CD)
+
+### 5.1 Incident Symptoms & Root Cause
+- **Symptoms**: Pull request CI pipeline fails on step `run_mlflow_eval` with `ValueError: CI QUALITY GATE FAILED: Faithfulness (0.78) below required production SLA (0.85)`.
+- **Root Cause**: A modified prompt template or updated chunking strategy caused the LLM to hallucinate answers not supported by retrieved Vector Search source documents.
+
+### 5.2 Remediation & Regression Diagnosis
+1. **Inspect MLflow Evaluation Traces**:
+   - Open Databricks MLflow Experiment associated with the PR commit SHA.
+   - Filter runs where `faithfulness/v1/score < 0.80`.
+   - Inspect the `retrieved_chunks` vs `generated_response` to identify which knowledge domain lacked grounded context.
+
+2. **Adjust Chunking Window or Boost Retrieval Score**:
+   - If chunks are truncated: increase chunk size from 500 to 1000 tokens with 200 token overlap in the preprocessing pipeline.
+   - If unrelated chunks retrieved: add metadata pre-filters or re-index with higher-dimension embedding model (`databricks-bge-large-en`).

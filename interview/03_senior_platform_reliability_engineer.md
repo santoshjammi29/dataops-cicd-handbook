@@ -1190,3 +1190,111 @@ with DAG(
 **Certification Alignment:** `DataOps Certified Professional / Apache Airflow Certification`
 
 ---
+
+---
+
+### MLOps & GenAIOps for Mosaic AI with Databricks Asset Bundles (GenAIOps & CI/CD)
+
+#### Scenario & Technical Context
+A platform engineering team standardizes the deployment of enterprise RAG applications and LLM agents using Databricks Asset Bundles (DABs). All resources — Unity Catalog schemas, Vector Search endpoints, Delta Sync indexes, Model Serving endpoints, and automated evaluation jobs — must be defined declaratively in version-controlled YAML and deployed across dev/staging/prod via GitHub Actions.
+
+#### Production Databricks Asset Bundle (bundle.yml) Definition
+```yaml
+# Declarative bundle defining Mosaic AI Vector Search & Model Serving
+bundle:
+  name: enterprise-genai-agent-platform
+
+targets:
+  staging:
+    mode: development
+    workspace:
+      host: https://adb-staging.azuredatabricks.net
+  prod:
+    mode: production
+    workspace:
+      host: https://adb-prod.azuredatabricks.net
+
+resources:
+  # 1. Declarative Vector Search Endpoint
+  vector_search_endpoints:
+    prod_vector_endpoint:
+      name: "prod_vector_search_endpoint"
+      endpoint_type: "STANDARD"
+
+  # 2. Declarative Model Serving Endpoint for Open LLM
+  model_serving_endpoints:
+    llama3_serving:
+      name: "prod-meta-llama-3-8b-instruct"
+      config:
+        served_entities:
+          - name: "llama-3-8b-entity"
+            entity_name: "system.ai.llama_3_8b_instruct"
+            entity_version: "1"
+            min_provisioned_throughput: 10
+            max_provisioned_throughput: 40
+
+  # 3. Automated MLflow Agent Evaluation Job
+  jobs:
+    agent_eval_ci_gate:
+      name: "agent-eval-ci-quality-gate"
+      tasks:
+        - task_key: "run_mlflow_eval"
+          notebook_task:
+            notebook_path: "./notebooks/eval_agent_regression.py"
+```
+
+#### Key Invariants & Architectural Gotchas
+- Store bundle variables in environment-specific target blocks (`targets.staging`, `targets.prod`).
+- Use GitHub Actions Workload Identity Federation (OIDC) to authenticate `databricks bundle deploy` without static tokens.
+- Version-control evaluation datasets in Unity Catalog Delta tables with time travel to ensure regression reproducibility.
+
+---
+
+### Automated LLM Agent Evaluation in CI/CD Pipelines (GenAIOps & CI/CD)
+
+#### Scenario & Technical Context
+Before any updated LLM prompt, chunking strategy, or foundation model is merged into `main`, the CI pipeline must run an automated evaluation suite against a benchmark golden dataset using MLflow 3.x `mlflow.evaluate()`. If groundedness or relevance metrics drop below 0.85, the pipeline fails and blocks production deployment.
+
+#### Production Python CI Evaluation Script (`eval_agent_regression.py`)
+```python
+import mlflow
+import os
+
+# Connect to Databricks MLflow tracking server in CI runner
+mlflow.set_tracking_uri("databricks")
+mlflow.set_experiment("/Shared/CI_CD/eval_agent_regression")
+
+# Load curated evaluation benchmark from Unity Catalog
+eval_dataset = spark.table("prod_catalog.ai_eval.rag_golden_benchmark").toPandas()
+
+# Run automated evaluation using LLM-as-a-Judge
+results = mlflow.evaluate(
+    model="models:/prod_catalog.ai_models.enterprise_rag_agent/champion",
+    data=eval_dataset,
+    model_type="databricks-agent",
+    targets="ground_truth_answer",
+    extra_metrics=[
+        mlflow.metrics.genai.relevance(),
+        mlflow.metrics.genai.faithfulness()
+    ]
+)
+
+# Extract computed quality scores
+faithfulness = results.metrics.get("faithfulness/v1/mean", 0.0)
+relevance = results.metrics.get("relevance/v1/mean", 0.0)
+print(f"CI Quality Gate Metrics - Faithfulness: {faithfulness}, Relevance: {relevance}")
+
+# Quality Gate Assertion: block merge if threshold breached
+MIN_THRESHOLD = 0.85
+if faithfulness < MIN_THRESHOLD or relevance < MIN_THRESHOLD:
+    raise ValueError(
+        f"CI QUALITY GATE FAILED: Faithfulness ({faithfulness:.2f}) or Relevance ({relevance:.2f}) "
+        f"below required production SLA ({MIN_THRESHOLD})"
+    )
+print("SUCCESS: Model passed all GenAI CI/CD quality gates!")
+```
+
+#### Key Invariants & Architectural Gotchas
+- Run evaluations on a dedicated test cluster with fixed random seeds for deterministic scoring.
+- Store evaluation traces in MLflow Tracking so data teams can inspect failed queries side-by-side.
+- Automate pull request comments displaying a summary scorecard of evaluation metrics across branches.
