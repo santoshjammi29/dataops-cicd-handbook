@@ -1,5 +1,11 @@
 # Module 09: Data Observability Pillars & OpenLineage Telemetry
 
+
+![Pipeline Orchestration Lifecycle, State Machine & Catchup Backfill](../../assets/whiteboards/orchestration_backfill_lifecycle_architecture.webp)
+> *Architectural Blueprint: [Pipeline Orchestration Lifecycle, State Machine & Catchup Backfill](../../docs/whiteboard_diagrams/README.md#orchestration-backfill-lifecycle). View full multi-persona breakdown and engine mechanisms in the master index.*
+
+
+
 ## 1. The Five Observability Pillars
 1. **Freshness**: Is the data up-to-date according to consumer SLAs?
 2. **Volume**: Did the expected number of records arrive?

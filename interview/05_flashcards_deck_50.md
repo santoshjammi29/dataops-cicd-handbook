@@ -1,356 +1,356 @@
-# 🗂️ The DataOps, IaC & Platform Engineering Handbook — Technical Flashcard Deck (50 Active Recall Questions)
+# 🗂️ The DataOps, CI/CD & Orchestration Handbook — Technical Flashcard Deck (50 Active Recall Questions)
 
-> **Domain**: Data Platform Engineering & Operations
-> **Format**: 50 Rapid-Fire Questions & Answers for Technical Mastery
-
----
-
-### 1. What is the primary operational consideration for Data Platform Engineering & Operations concept #1?
-
-**Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+> **Coverage**: Modules 01 through 10 of The DataOps, CI/CD & Orchestration Handbook
+> **Focus**: 50 Rapid-Fire Questions & Answers for Airflow, GitOps, CI/CD, Terraform, and Testing
 
 ---
 
-### 2. What is the primary operational consideration for Data Platform Engineering & Operations concept #2?
+### 1. What is DataOps?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+An automated, process-oriented methodology used by data teams to improve data quality and cycle time of data analytics.
 
 ---
 
-### 3. What is the primary operational consideration for Data Platform Engineering & Operations concept #3?
+### 2. What is GitOps in modern data engineering?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Using Git repositories as the single source of truth for declarative infrastructure, data pipelines, and deployment automation.
 
 ---
 
-### 4. What is the primary operational consideration for Data Platform Engineering & Operations concept #4?
+### 3. What is the Write-Audit-Publish (WAP) pattern?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Data is written to an isolated staging area/branch, audited with automated quality tests, and published to production only upon passing.
 
 ---
 
-### 5. What is the primary operational consideration for Data Platform Engineering & Operations concept #5?
+### 4. Difference between LocalExecutor, CeleryExecutor, and KubernetesExecutor in Airflow?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Local runs tasks in local processes; Celery distributes across worker pool via Redis/RabbitMQ; K8s spins up ephemeral pods per task.
 
 ---
 
-### 6. What is the primary operational consideration for Data Platform Engineering & Operations concept #6?
+### 5. What is the Airflow TaskFlow API?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Python decorator syntax (`@task`, `@dag`) allowing implicit XCom passing and cleaner, more pythonic DAG definitions.
 
 ---
 
-### 7. What is the primary operational consideration for Data Platform Engineering & Operations concept #7?
+### 6. What are XComs in Airflow and what is their size limit?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Cross-communication mechanism for passing small metadata between tasks; limited by metadata DB backend (1 GB in Postgres, 64 KB in MySQL).
 
 ---
 
-### 8. What is the primary operational consideration for Data Platform Engineering & Operations concept #8?
+### 7. Why should XComs NEVER be used to pass large DataFrames or datasets?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Serializes data directly into the Airflow metadata database, causing severe database bloat, memory exhaustion, and scheduler crashes.
 
 ---
 
-### 9. What is the primary operational consideration for Data Platform Engineering & Operations concept #9?
+### 8. What is dynamic DAG generation in Airflow?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Creating DAG structures programmatically at parse time from external configuration files (JSON, YAML) or database metadata.
 
 ---
 
-### 10. What is the primary operational consideration for Data Platform Engineering & Operations concept #10?
+### 9. What is the purpose of an Airflow Pool?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Limits concurrent execution of tasks that share a common constrained external resource (e.g. database connections, API quotas).
 
 ---
 
-### 11. What is the primary operational consideration for Data Platform Engineering & Operations concept #11?
+### 10. What causes an Airflow Zombie Task?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+A task instance whose corresponding worker process was killed or vanished without reporting state back to the scheduler.
 
 ---
 
-### 12. What is the primary operational consideration for Data Platform Engineering & Operations concept #12?
+### 11. How does Airflow detect and remediate zombie tasks?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+The scheduler heartbeat polls task states; if a running task has no active heartbeat for `scheduler_zombie_task_threshold`, it marks it failed.
 
 ---
 
-### 13. What is the primary operational consideration for Data Platform Engineering & Operations concept #13?
+### 12. What is an Airflow Sensor and what is `mode='reschedule'` vs `mode='poke'`?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+`poke` holds the worker slot continuously while polling; `reschedule` releases the worker slot between retries, saving resources.
 
 ---
 
-### 14. What is the primary operational consideration for Data Platform Engineering & Operations concept #14?
+### 13. What is catchup in Airflow and why should it usually be set to `catchup=False`?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Catchup executes all un-run historical intervals since `start_date`; disabling it prevents accidental massive backfill storms.
 
 ---
 
-### 15. What is the primary operational consideration for Data Platform Engineering & Operations concept #15?
+### 14. What is an SLA (Service Level Agreement) in Airflow?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Time limit by which a task or DAG should complete relative to its execution date, triggering callback alerts on breach.
 
 ---
 
-### 16. What is the primary operational consideration for Data Platform Engineering & Operations concept #16?
+### 15. What is Infrastructure as Code (IaC) with Terraform?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Defining and provisioning cloud infrastructure (storage, clusters, IAM roles) declaratively via human-readable HCL configuration files.
 
 ---
 
-### 17. What is the primary operational consideration for Data Platform Engineering & Operations concept #17?
+### 16. What is Terraform state (`terraform.tfstate`)?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+A JSON map recording the real-world resources managed by Terraform and matching them to your declarative configuration.
 
 ---
 
-### 18. What is the primary operational consideration for Data Platform Engineering & Operations concept #18?
+### 17. Why must Terraform remote state locking be enabled (e.g. DynamoDB / Azure Blob lease)?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Prevents concurrent apply executions from corrupting the state file and causing conflicting infrastructure mutations.
 
 ---
 
-### 19. What is the primary operational consideration for Data Platform Engineering & Operations concept #19?
+### 18. What is pre-commit and why is it essential for data repositories?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+A framework for managing multi-language git hooks that automatically inspect, lint, and format staged files before commit creation.
 
 ---
 
-### 20. What is the primary operational consideration for Data Platform Engineering & Operations concept #20?
+### 19. What does SQLFluff do?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+An open-source, dialect-aware SQL linter and auto-formatter that enforces code styling standards across data teams.
 
 ---
 
-### 21. What is the primary operational consideration for Data Platform Engineering & Operations concept #21?
+### 20. What is Slim CI in data pipeline deployment?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Compiling modified files and executing tests only on altered code and its downstream dependencies, drastically cutting CI duration and cost.
 
 ---
 
-### 22. What is the primary operational consideration for Data Platform Engineering & Operations concept #22?
+### 21. What is GitHub Actions and how do workflow triggers work?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+CI/CD automation platform triggered by Git events (`push`, `pull_request`, `schedule`, `workflow_dispatch`).
 
 ---
 
-### 23. What is the primary operational consideration for Data Platform Engineering & Operations concept #23?
+### 22. What is OpenID Connect (OIDC) between GitHub Actions and Cloud Providers?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Exchanges short-lived JWT tokens for cloud IAM access, eliminating long-lived static secrets and credentials in CI/CD.
 
 ---
 
-### 24. What is the primary operational consideration for Data Platform Engineering & Operations concept #24?
+### 23. What is Docker and why is it used for data workloads?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Containerization platform packaging pipeline code, system dependencies, and Python libraries into an immutable, portable image.
 
 ---
 
-### 25. What is the primary operational consideration for Data Platform Engineering & Operations concept #25?
+### 24. What is a multi-stage Docker build?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Build pattern using multiple `FROM` instructions to compile dependencies in temporary stages, producing a lean production runtime container.
 
 ---
 
-### 26. What is the primary operational consideration for Data Platform Engineering & Operations concept #26?
+### 25. What is the Kubernetes Operator pattern for data engineering?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Extends Kubernetes API with custom controllers to manage complex stateful data applications (Spark on K8s, Airflow, Flink).
 
 ---
 
-### 27. What is the primary operational consideration for Data Platform Engineering & Operations concept #27?
+### 26. What is the Spark-on-K8s Operator?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Kubernetes custom controller that manages the lifecycle of Apache Spark driver and executor pods declaratively via YAML manifests.
 
 ---
 
-### 28. What is the primary operational consideration for Data Platform Engineering & Operations concept #28?
+### 27. What is data-diff in automated testing?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Tool that compares row-by-row and column-by-column values between two tables (e.g. staging vs prod) to verify zero unintended schema drift.
 
 ---
 
-### 29. What is the primary operational consideration for Data Platform Engineering & Operations concept #29?
+### 28. What is Great Expectations (GX)?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Python library for validating, profiling, and documenting data against declarative assertions (Expectations) in automated pipelines.
 
 ---
 
-### 30. What is the primary operational consideration for Data Platform Engineering & Operations concept #30?
+### 29. What is Soda Core / SodaSQL?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Lightweight open-source CLI and library that runs automated SQL checks across datasets against declarative YAML check files.
 
 ---
 
-### 31. What is the primary operational consideration for Data Platform Engineering & Operations concept #31?
+### 30. What is data lineage and why is it critical in DataOps?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Tracking the full origin, movement, and transformations of data from raw source ingestion down to consumption dashboards.
 
 ---
 
-### 32. What is the primary operational consideration for Data Platform Engineering & Operations concept #32?
+### 31. What is OpenLineage?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+An open standard for data lineage collection that instruments pipelines (Airflow, Spark, dbt) to emit runtime lineage events.
 
 ---
 
-### 33. What is the primary operational consideration for Data Platform Engineering & Operations concept #33?
+### 32. What is data observability and what are its 5 pillars?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+System monitoring focusing on Freshness, Volume, Schema, Quality, and Lineage across enterprise data assets.
 
 ---
 
-### 34. What is the primary operational consideration for Data Platform Engineering & Operations concept #34?
+### 33. Difference between unit testing and integration testing in data pipelines?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Unit tests evaluate isolated functions with mock data; integration tests execute end-to-end pipelines against actual databases/storage.
 
 ---
 
-### 35. What is the primary operational consideration for Data Platform Engineering & Operations concept #35?
+### 34. What is an ephemeral development environment in DataOps?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Short-lived isolated cloud database schema or bucket created dynamically per pull request and destroyed upon merge.
 
 ---
 
-### 36. What is the primary operational consideration for Data Platform Engineering & Operations concept #36?
+### 35. How do zero-copy clones (Snowflake / Databricks) accelerate CI testing?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Instantly duplicates multi-terabyte production metadata without copying underlying storage bytes, enabling full-scale testing at near zero cost.
 
 ---
 
-### 37. What is the primary operational consideration for Data Platform Engineering & Operations concept #37?
+### 36. What is Blue-Green deployment for data platforms?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Running two identical production environments (Blue and Green); testing on Green, switching traffic to Green, and keeping Blue for instant rollback.
 
 ---
 
-### 38. What is the primary operational consideration for Data Platform Engineering & Operations concept #38?
+### 37. What is a Canary release in data pipelines?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Routing a small percentage (e.g. 5%) of production traffic or consumers to the new pipeline version before full rollout.
 
 ---
 
-### 39. What is the primary operational consideration for Data Platform Engineering & Operations concept #39?
+### 38. What is FinOps in cloud data engineering?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Cultural and operational practice combining finance, engineering, and business to drive financial accountability in cloud data spend.
 
 ---
 
-### 40. What is the primary operational consideration for Data Platform Engineering & Operations concept #40?
+### 39. What are the primary cost drivers in Databricks / Snowflake / BigQuery?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Idle compute clusters, oversized warehouse SKUs, unpartitioned full table scans, unbounded shuffle spills, and uncompressed storage.
 
 ---
 
-### 41. What is the primary operational consideration for Data Platform Engineering & Operations concept #41?
+### 40. How do query comments and tags enforce resource attribution in DataOps?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Injecting Git repo, PR number, team name, and pipeline ID into query metadata allows FinOps to map warehouse credit burn to teams.
 
 ---
 
-### 42. What is the primary operational consideration for Data Platform Engineering & Operations concept #42?
+### 41. What is a circuit breaker in data pipelines?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Automated quality gate that immediately halts pipeline execution and aborts downstream updates if anomalous data is detected.
 
 ---
 
-### 43. What is the primary operational consideration for Data Platform Engineering & Operations concept #43?
+### 42. What is a Data Contract in platform architecture?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+A formal agreement between data producers and data consumers defining schema, SLA, semantics, and governance requirements.
 
 ---
 
-### 44. What is the primary operational consideration for Data Platform Engineering & Operations concept #44?
+### 43. What happens when a data producer introduces an unannounced breaking schema change?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Downstream ingestion pipelines break, reports display corrupt metrics, and models fail; prevented by CI schema validation on producer repos.
 
 ---
 
-### 45. What is the primary operational consideration for Data Platform Engineering & Operations concept #45?
+### 44. What is semantic versioning (SemVer) applied to data products?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+MAJOR version bumps for breaking schema changes; MINOR for backward-compatible additions; PATCH for bug fixes or documentation updates.
 
 ---
 
-### 46. What is the primary operational consideration for Data Platform Engineering & Operations concept #46?
+### 45. What is automated rollback in modern data pipelines?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Reverting to the previous immutable table snapshot (e.g. `RESTORE TABLE ... TO VERSION AS OF`) upon automated test failure.
 
 ---
 
-### 47. What is the primary operational consideration for Data Platform Engineering & Operations concept #47?
+### 46. What is secret scanning in GitHub?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Automated security check that alerts and blocks commits containing API keys, private keys, or database passwords.
 
 ---
 
-### 48. What is the primary operational consideration for Data Platform Engineering & Operations concept #48?
+### 47. What is trunk-based development vs GitFlow in DataOps?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Trunk-based uses short-lived feature branches merged frequently to `main` with CI; GitFlow uses complex long-lived release and develop branches.
 
 ---
 
-### 49. What is the primary operational consideration for Data Platform Engineering & Operations concept #49?
+### 48. What is a Disaster Recovery (DR) RPO and RTO for data platforms?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+RPO (Recovery Point Objective) is max tolerable data loss duration; RTO (Recovery Time Objective) is max tolerable downtime duration.
 
 ---
 
-### 50. What is the primary operational consideration for Data Platform Engineering & Operations concept #50?
+### 49. How does automated dead-letter routing prevent pipeline blocking?
 
 **Answer:**  
-Enforce deterministic execution, bounded resource allocation, idempotent state commits, and active monitoring of consumer latency.
+Routes corrupted records to an isolated quarantine location while allowing valid records to proceed through the pipeline.
+
+---
+
+### 50. What is the golden rule of automated testing in data engineering?
+
+**Answer:**  
+Never test on production data without isolation; always test transformations against deterministic edge-case fixtures in CI.
 
 ---

@@ -1,5 +1,15 @@
 # 🏛️ Architecture: Write-Audit-Publish (WAP) & Automated Quality Gates
 
+
+![Data Quality Observability & Write-Audit-Publish (WAP) Circuit Breaker Flow](../assets/whiteboards/data_quality_wap_quarantine_architecture.webp)
+> *Architectural Blueprint: [Data Quality Observability & Write-Audit-Publish (WAP) Circuit Breaker Flow](../docs/whiteboard_diagrams/README.md#data-quality-wap-quarantine). View full multi-persona breakdown and engine mechanisms in the master index.*
+
+
+![6 Delta Lake Optimization Techniques: Lakehouse Performance & Storage Hygiene](../assets/whiteboards/databricks_optimization_techniques_architecture.webp)
+> *Architectural Blueprint: [6 Delta Lake Optimization Techniques: Lakehouse Performance & Storage Hygiene](../docs/whiteboard_diagrams/README.md#databricks-optimization-techniques-architecture). View full multi-persona breakdown and engine mechanisms in the master index.*
+
+
+
 > **Domain**: Data Platform Engineering & Operations  
 > **Target Audience**: Senior Engineers, Data Architects, Platform Leads  
 > **Overview**: Branching table commits, pre-merge assertions with Great Expectations/Soda, zero-leak pipelines.

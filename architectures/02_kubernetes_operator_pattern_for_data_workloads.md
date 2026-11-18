@@ -1,5 +1,15 @@
 # 🏛️ Architecture: Kubernetes Operator Pattern for Data Workloads
 
+
+![Apache Airflow Distributed Production Architecture](../assets/whiteboards/apache_airflow_architecture.webp)
+> *Architectural Blueprint: [Apache Airflow Distributed Production Architecture](../docs/whiteboard_diagrams/README.md#apache-airflow-distributed-architecture). View full multi-persona breakdown and engine mechanisms in the master index.*
+
+
+![Pipeline Orchestration Lifecycle, State Machine & Catchup Backfill](../assets/whiteboards/orchestration_backfill_lifecycle_architecture.webp)
+> *Architectural Blueprint: [Pipeline Orchestration Lifecycle, State Machine & Catchup Backfill](../docs/whiteboard_diagrams/README.md#orchestration-backfill-lifecycle). View full multi-persona breakdown and engine mechanisms in the master index.*
+
+
+
 > **Domain**: Data Platform Engineering & Operations  
 > **Target Audience**: Senior Engineers, Data Architects, Platform Leads  
 > **Overview**: Custom Resource Definitions (CRDs), Spark-on-K8s, and Airflow on Kubernetes.
