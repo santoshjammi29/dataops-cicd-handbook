@@ -1,0 +1,21 @@
+name: "Data Platform Slim CI Pipeline"
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  slim_ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Download Production Manifest
+        run: |
+          aws s3 cp s3://enterprise-artifacts/manifest.json ./prod_manifest/
+      - name: Execute Slim CI Run
+        run: |
+          dbt run --select state:modified+ --defer --state ./prod_manifest/
+          dbt test --select state:modified+ --defer --state ./prod_manifest/
