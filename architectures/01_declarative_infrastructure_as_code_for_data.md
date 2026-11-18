@@ -85,3 +85,57 @@ assert pipeline_config["checkpoint_interval_seconds"] > 0
 - Monitor active lag metrics and consumer offsets every 10 seconds.
 - Validate end-to-end processing SLA latency using distributed tracing.
 - Maintain automated regression assertions across test environments.
+
+---
+
+## 4. Databricks Asset Bundles (DABs) & OIDC Workload Identity Automation
+
+Modern DataOps deploys pipelines, serverless compute, and Databricks Apps declaratively using **Databricks Asset Bundles (DABs)** driven by **GitHub Actions OIDC federation**.
+
+```mermaid
+flowchart LR
+    subgraph Repo["Git Repository"]
+        DABConfig["databricks.yml (IaC Bundle Manifest)"]
+        Pipelines["Pipeline YAML & Python Wheels"]
+    end
+
+    subgraph CI["GitHub Actions Runner"]
+        OIDC["OIDC Token Exchange (No Long-Lived Secrets)"]
+        Validate["databricks bundle validate -t prod"]
+        Deploy["databricks bundle deploy -t prod"]
+    end
+
+    subgraph Workspace["Target Production Workspace"]
+        ServerlessJob["Serverless Lakeflow Job (Managed Fleet)"]
+        DBSQL["Serverless SQL Warehouse Schedule"]
+    end
+
+    Repo --> OIDC --> Validate --> Deploy --> ServerlessJob & DBSQL
+```
+
+### Production Configuration: DABs Bundle Definition (`databricks.yml`)
+```yaml
+bundle:
+  name: enterprise-dataops-pipeline
+
+targets:
+  prod:
+    mode: production
+    workspace:
+      root_path: /Shared/.bundle/${bundle.name}/${bundle.target}
+    run_as:
+      service_principal_name: "4f63c679-0db8-40a2-b91a-7b3b7e7136f4"
+    resources:
+      jobs:
+        lakehouse_etl_job:
+          name: "Daily Lakehouse Gold Pipeline"
+          tasks:
+            - task_key: "silver_transform"
+              serverless: true # Run on serverless compute fleet
+              notebook_task:
+                notebook_path: "./notebooks/silver_transform.py"
+```
+
+### Key DataOps Invariants:
+- **Zero Static Credentials**: Authenticates via OpenID Connect (OIDC) JWT exchange with Azure Entra / AWS IAM.
+- **Service Principal Ownership**: Production jobs are owned strictly by Service Principals, never personal user accounts.
