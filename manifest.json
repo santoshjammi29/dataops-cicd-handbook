@@ -1,0 +1,240 @@
+{
+  "repo": "dataops-cicd-handbook",
+  "github": "santoshjammi29/dataops-cicd-handbook",
+  "name": "DataOps & CI/CD Handbook",
+  "role": "Platform engineering: GitOps, Terraform & Bicep IaC, Write-Audit-Publish, Data Diff, Slim CI",
+  "last_synced": "2026-11-20T08:25:01.798697Z",
+  "entry_count": 20,
+  "entries": [
+    {
+      "id": "dataops-cicd-handbook-01_gitops_and_trunk_based_development",
+      "type": "curriculum_module",
+      "title": "Gitops And Trunk Based Development",
+      "module": "01_gitops_and_trunk_based_development",
+      "difficulty": "L200",
+      "relative_path": "modules/01_gitops_and_trunk_based_development/README.md",
+      "pillars": [
+        "Apache Airflow & Orchestration",
+        "General Data Engineering & Modeling"
+      ]
+    },
+    {
+      "id": "dataops-cicd-handbook-02_declarative_infrastructure_as_code",
+      "type": "curriculum_module",
+      "title": "Declarative Infrastructure As Code",
+      "module": "02_declarative_infrastructure_as_code",
+      "difficulty": "L200",
+      "relative_path": "modules/02_declarative_infrastructure_as_code/README.md",
+      "pillars": [
+        "Apache Airflow & Orchestration",
+        "General Data Engineering & Modeling"
+      ]
+    },
+    {
+      "id": "dataops-cicd-handbook-03_automated_testing_and_data_diff",
+      "type": "curriculum_module",
+      "title": "Automated Testing And Data Diff",
+      "module": "03_automated_testing_and_data_diff",
+      "difficulty": "L200",
+      "relative_path": "modules/03_automated_testing_and_data_diff/README.md",
+      "pillars": [
+        "Apache Airflow & Orchestration",
+        "General Data Engineering & Modeling"
+      ]
+    },
+    {
+      "id": "dataops-cicd-handbook-04_slim_ci_and_state_deferral",
+      "type": "curriculum_module",
+      "title": "Slim Ci And State Deferral",
+      "module": "04_slim_ci_and_state_deferral",
+      "difficulty": "L200",
+      "relative_path": "modules/04_slim_ci_and_state_deferral/README.md",
+      "pillars": [
+        "Apache Airflow & Orchestration",
+        "General Data Engineering & Modeling"
+      ]
+    },
+    {
+      "id": "dataops-cicd-handbook-05_pre_commit_linters_and_static_analysis",
+      "type": "curriculum_module",
+      "title": "Pre Commit Linters And Static Analysis",
+      "module": "05_pre_commit_linters_and_static_analysis",
+      "difficulty": "L200",
+      "relative_path": "modules/05_pre_commit_linters_and_static_analysis/README.md",
+      "pillars": [
+        "Apache Airflow & Orchestration",
+        "General Data Engineering & Modeling"
+      ]
+    },
+    {
+      "id": "dataops-cicd-handbook-06_write_audit_publish_and_blue_green",
+      "type": "curriculum_module",
+      "title": "Write Audit Publish And Blue Green",
+      "module": "06_write_audit_publish_and_blue_green",
+      "difficulty": "L200",
+      "relative_path": "modules/06_write_audit_publish_and_blue_green/README.md",
+      "pillars": [
+        "Apache Airflow & Orchestration",
+        "General Data Engineering & Modeling"
+      ]
+    },
+    {
+      "id": "dataops-cicd-handbook-07_kubernetes_and_containerized_compute",
+      "type": "curriculum_module",
+      "title": "Kubernetes And Containerized Compute",
+      "module": "07_kubernetes_and_containerized_compute",
+      "difficulty": "L200",
+      "relative_path": "modules/07_kubernetes_and_containerized_compute/README.md",
+      "pillars": [
+        "Apache Airflow & Orchestration",
+        "General Data Engineering & Modeling"
+      ]
+    },
+    {
+      "id": "dataops-cicd-handbook-08_secrets_management_and_oidc_workload_identity",
+      "type": "curriculum_module",
+      "title": "Secrets Management And Oidc Workload Identity",
+      "module": "08_secrets_management_and_oidc_workload_identity",
+      "difficulty": "L200",
+      "relative_path": "modules/08_secrets_management_and_oidc_workload_identity/README.md",
+      "pillars": [
+        "Apache Airflow & Orchestration",
+        "General Data Engineering & Modeling"
+      ]
+    },
+    {
+      "id": "dataops-cicd-handbook-09_observability_sla_alerting_and_telemetry",
+      "type": "curriculum_module",
+      "title": "Observability Sla Alerting And Telemetry",
+      "module": "09_observability_sla_alerting_and_telemetry",
+      "difficulty": "L200",
+      "relative_path": "modules/09_observability_sla_alerting_and_telemetry/README.md",
+      "pillars": [
+        "Apache Airflow & Orchestration",
+        "General Data Engineering & Modeling"
+      ]
+    },
+    {
+      "id": "dataops-cicd-handbook-10_incident_management_and_post_mortem",
+      "type": "curriculum_module",
+      "title": "Incident Management And Post Mortem",
+      "module": "10_incident_management_and_post_mortem",
+      "difficulty": "L200",
+      "relative_path": "modules/10_incident_management_and_post_mortem/README.md",
+      "pillars": [
+        "Apache Airflow & Orchestration",
+        "General Data Engineering & Modeling"
+      ]
+    },
+    {
+      "id": "dataops-cicd-handbook-rb-01_iac_state_lock_and_drift_disaster_recovery",
+      "type": "incident_runbook",
+      "title": "Incident Runbook: Iac State Lock And Drift Disaster Recovery",
+      "difficulty": "L400",
+      "relative_path": "runbooks/01_iac_state_lock_and_drift_disaster_recovery.md",
+      "pillars": [
+        "Apache Airflow & Orchestration",
+        "General Data Engineering & Modeling"
+      ]
+    },
+    {
+      "id": "dataops-cicd-handbook-rb-02_production_schema_migration_rollback_triage",
+      "type": "incident_runbook",
+      "title": "Incident Runbook: Production Schema Migration Rollback Triage",
+      "difficulty": "L400",
+      "relative_path": "runbooks/02_production_schema_migration_rollback_triage.md",
+      "pillars": [
+        "Apache Airflow & Orchestration",
+        "General Data Engineering & Modeling"
+      ]
+    },
+    {
+      "id": "dataops-cicd-handbook-rb-03_data_quality_assertion_pipeline_blocker_triage",
+      "type": "incident_runbook",
+      "title": "Incident Runbook: Data Quality Assertion Pipeline Blocker Triage",
+      "difficulty": "L400",
+      "relative_path": "runbooks/03_data_quality_assertion_pipeline_blocker_triage.md",
+      "pillars": [
+        "Apache Airflow & Orchestration",
+        "General Data Engineering & Modeling"
+      ]
+    },
+    {
+      "id": "dataops-cicd-handbook-rb-04_kubernetes_node_memory_eviction_and_oom_triage",
+      "type": "incident_runbook",
+      "title": "Incident Runbook: Kubernetes Node Memory Eviction And Oom Triage",
+      "difficulty": "L400",
+      "relative_path": "runbooks/04_kubernetes_node_memory_eviction_and_oom_triage.md",
+      "pillars": [
+        "Apache Airflow & Orchestration",
+        "General Data Engineering & Modeling"
+      ]
+    },
+    {
+      "id": "dataops-cicd-handbook-rb-05_ci_runner_credential_compromise_and_token_rotation",
+      "type": "incident_runbook",
+      "title": "Incident Runbook: Ci Runner Credential Compromise And Token Rotation",
+      "difficulty": "L400",
+      "relative_path": "runbooks/05_ci_runner_credential_compromise_and_token_rotation.md",
+      "pillars": [
+        "Apache Airflow & Orchestration",
+        "General Data Engineering & Modeling"
+      ]
+    },
+    {
+      "id": "dataops-cicd-handbook-rb-06_data_observability_alert_fatigue_and_threshold_tuning",
+      "type": "incident_runbook",
+      "title": "Incident Runbook: Data Observability Alert Fatigue And Threshold Tuning",
+      "difficulty": "L400",
+      "relative_path": "runbooks/06_data_observability_alert_fatigue_and_threshold_tuning.md",
+      "pillars": [
+        "Apache Airflow & Orchestration",
+        "General Data Engineering & Modeling"
+      ]
+    },
+    {
+      "id": "dataops-cicd-handbook-doc-01_declarative_infrastructure_as_code_for_data",
+      "type": "architecture_blueprint",
+      "title": "Architecture: 01 Declarative Infrastructure As Code For Data",
+      "difficulty": "L400",
+      "relative_path": "architectures/01_declarative_infrastructure_as_code_for_data.md",
+      "pillars": [
+        "Apache Airflow & Orchestration",
+        "General Data Engineering & Modeling"
+      ]
+    },
+    {
+      "id": "dataops-cicd-handbook-doc-02_kubernetes_operator_pattern_for_data_workloads",
+      "type": "architecture_blueprint",
+      "title": "Architecture: 02 Kubernetes Operator Pattern For Data Workloads",
+      "difficulty": "L400",
+      "relative_path": "architectures/02_kubernetes_operator_pattern_for_data_workloads.md",
+      "pillars": [
+        "Apache Airflow & Orchestration",
+        "General Data Engineering & Modeling"
+      ]
+    },
+    {
+      "id": "dataops-cicd-handbook-doc-03_automated_data_quality_gates_and_wap",
+      "type": "architecture_blueprint",
+      "title": "Architecture: 03 Automated Data Quality Gates And Wap",
+      "difficulty": "L400",
+      "relative_path": "architectures/03_automated_data_quality_gates_and_wap.md",
+      "pillars": [
+        "Apache Airflow & Orchestration",
+        "General Data Engineering & Modeling"
+      ]
+    },
+    {
+      "id": "dataops-cicd-handbook-doc-04_data_observability_and_statistical_anomaly_detection",
+      "type": "architecture_blueprint",
+      "title": "Architecture: 04 Data Observability And Statistical Anomaly Detection",
+      "difficulty": "L400",
+      "relative_path": "architectures/04_data_observability_and_statistical_anomaly_detection.md",
+      "pillars": [
+        "Apache Airflow & Orchestration",
+        "General Data Engineering & Modeling"
+      ]
+    }
+  ]
+}

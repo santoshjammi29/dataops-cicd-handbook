@@ -1,0 +1,53 @@
+name: Reusable Workflow — Automated Data Diff & Value Parity
+
+on:
+  workflow_call:
+    inputs:
+      prod_table:
+        description: "Fully qualified production table name"
+        required: true
+        type: string
+      dev_table:
+        description: "Fully qualified development/PR table name"
+        required: true
+        type: string
+      primary_key:
+        description: "Primary key column name(s) for join"
+        required: true
+        type: string
+    secrets:
+      DATABRICKS_HOST:
+        required: true
+      DATABRICKS_TOKEN:
+        required: true
+
+jobs:
+  data_diff_verification:
+    name: Run Data Diff Value Parity Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install Data Diff Engine
+        run: |
+          pip install data-diff databricks-sql-connector
+
+      - name: Execute Cross-Table Value Parity Diff
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          echo "Comparing ${{ inputs.prod_table }} vs ${{ inputs.dev_table }} on ${{ inputs.primary_key }}..."
+          data-diff \
+            "databricks://${{ secrets.DATABRICKS_HOST }}/default?table=${{ inputs.prod_table }}" \
+            "databricks://${{ secrets.DATABRICKS_HOST }}/default?table=${{ inputs.dev_table }}" \
+            -k "${{ inputs.primary_key }}" \
+            --stats \
+            --bisection-threshold 10000

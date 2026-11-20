@@ -1,0 +1,58 @@
+name: Reusable Workflow — dbt Slim CI & State Deferral
+
+on:
+  workflow_call:
+    inputs:
+      target_env:
+        description: "Target deployment environment (e.g., pr_env, staging)"
+        required: true
+        type: string
+        default: "pr_env"
+      manifest_s3_uri:
+        description: "S3 URI or Cloud Storage path to production manifest.json"
+        required: true
+        type: string
+      dbt_version:
+        description: "dbt Core / Adapter version"
+        required: false
+        type: string
+        default: "1.9.0"
+    secrets:
+      DBT_PROFILES_DIR:
+        required: false
+      LAKEHOUSE_CONNECTION_STRING:
+        required: true
+
+jobs:
+  slim_ci:
+    name: Execute Slim CI Build & Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR Branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dbt & Data Diff
+        run: |
+          pip install dbt-core==${{ inputs.dbt_version }} dbt-databricks data-diff
+
+      - name: Fetch Production State Manifest
+        run: |
+          mkdir -p ./prod-manifest
+          echo "Downloading production manifest from ${{ inputs.manifest_s3_uri }}..."
+          # Mock download or AWS CLI sync
+          # aws s3 cp ${{ inputs.manifest_s3_uri }}/manifest.json ./prod-manifest/manifest.json
+
+      - name: Compile and Build Modified Models Only (Slim CI)
+        run: |
+          echo "Running dbt build on modified models and downstream dependencies..."
+          dbt build \
+            --select state:modified+ \
+            --defer \
+            --state ./prod-manifest \
+            --target ${{ inputs.target_env }}

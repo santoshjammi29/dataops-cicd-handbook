@@ -1,0 +1,53 @@
+name: Reusable Workflow — Databricks Asset Bundles (DABs) Deployment
+
+on:
+  workflow_call:
+    inputs:
+      target_env:
+        description: "Target deployment environment (dev, staging, prod)"
+        required: true
+        type: string
+        default: "staging"
+      bundle_dir:
+        description: "Root path of Databricks bundle"
+        required: false
+        type: string
+        default: "."
+    secrets:
+      DATABRICKS_HOST:
+        required: true
+      DATABRICKS_CLIENT_ID:
+        required: true
+      DATABRICKS_CLIENT_SECRET:
+        required: true
+
+jobs:
+  bundle_validate_and_deploy:
+    name: DABs Validate & Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install Databricks CLI
+        run: |
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+          databricks --version
+
+      - name: Validate Databricks Bundle Configuration
+        working-directory: ${{ inputs.bundle_dir }}
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
+          DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_CLIENT_SECRET }}
+        run: |
+          databricks bundle validate -t ${{ inputs.target_env }}
+
+      - name: Deploy Bundle to Target Environment
+        working-directory: ${{ inputs.bundle_dir }}
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
+          DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_CLIENT_SECRET }}
+        run: |
+          databricks bundle deploy -t ${{ inputs.target_env }}
