@@ -1,8 +1,9 @@
-# 🚨 Production Runbook: CI/CD Service Principal Compromise & Token Emergency Rotation
+# 🚨 Production Runbook 05: CI Runner Credential Compromise & Keyless OIDC Migration
 
-> **Severity**: `SEV-1`  
-> **Domain**: Data Platform Engineering & Operations  
-> **Key Focus**: Invalidate GitHub Actions / GitLab CI OIDC credentials and audit recent workflow runs.
+> **Incident Severity**: `SEV-1`  
+> **Domain**: DevSecOps & Supply Chain Security  
+> **Target Systems**: GitHub Actions, AWS IAM, Azure Entra ID, HashiCorp Vault  
+> **Objective**: Invalidate compromised long-lived CI service account keys and enforce keyless OIDC workload identity.
 
 ---
 
@@ -10,58 +11,50 @@
 
 ```mermaid
 flowchart TD
-    Alert["🚨 CI/CD Service Principal Compromise & Token Emergency Rotation (SEV-1)"] --> TriageCategory{"Identify Root Cause Category"}
-    
-    TriageCategory -->|"Configuration or Schema Drift"| ConfigTriage["Inspect Pipeline Schema & Type Contracts"]
-    TriageCategory -->|"Resource Starvation or OOM"| ResourceTriage["Inspect Memory Pools, Off-Heap State & GC"]
-    TriageCategory -->|"Network or Storage Timeout"| NetworkTriage["Inspect Downstream Latency & Deadlocks"]
-
-    ConfigTriage --> FixConfig["Remediation: Pin Schema Contracts & Apply Reversion"]
-    ResourceTriage --> FixResource["Remediation: Increase Worker Memory & Throttle Batch Slices"]
-    NetworkTriage --> FixNetwork["Remediation: Trigger Failover & Backoff Retry Strategy"]
+    Alert["SEV-1 Alert: CI Secret Leaked in Build Logs or Compromised Runner"] --> RevokeCreds["Step 1: Immediately Invalidate Secret in Cloud IAM"]
+    RevokeCreds --> AuditLogs["Step 2: Query CloudTrail / Azure Activity Log for Misuse"]
+    AuditLogs --> MigrateOIDC["Step 3: Replace Static Secrets with Keyless OIDC Federation"]
 ```
 
 ---
 
 ## 2. Immediate Diagnostic Procedures (First 5 Minutes)
 
-### Step 1: Query Error Signatures and Pipeline Metrics
-Run the following inspection commands to isolate the fault:
+### Step 1: Invalidate Leaked Azure Service Principal Key
 ```bash
-# Check pipeline task status and recent error traces
-echo "Inspecting error status for pipeline..."
-grep -E "ERROR|CRITICAL|Exception|Timeout" /var/log/pipeline.log | tail -n 25
-```
-
-### Step 2: Inspect Worker and State Health
-Check memory, disk saturation, and open file descriptors:
-```bash
-# Verify worker container resource utilization
-ps aux --sort=-%mem | head -n 10
+az ad app credential delete --id <CLIENT_ID> --key-id <KEY_ID>
 ```
 
 ---
 
-## 3. Root Cause Analysis & Detailed Remediation
+## 3. Root Cause Analysis & Production Remediation
 
-### Primary Root Cause
-In production systems, this incident typically originates from sudden traffic surges, upstream breaking schema mutations, or resource limits being breached without backpressure.
+### Production GitHub Actions Keyless OIDC Workflow
+```yaml
+name: Deploy Data Pipelines
+on:
+  push:
+    branches: [main]
 
-### Remediation & Recovery Strategy:
-1. **Apply Emergency Throttle**: Restrict incoming batch size or pause non-critical consumers.
-2. **Apply Hotfix Configuration**:
-   ```python
-   # Emergency throttle configuration
-   throttle_rate_per_sec = 5000
-   retry_backoff_multiplier = 2.0
-   max_retry_limit = 5
-   ```
-3. **Execute Recovery Step**: Re-run the validation test suite and verify consumer convergence.
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Azure OIDC Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+```
 
 ---
 
-## 4. Verification & Prevention Checklist
-
-- [ ] Pipeline metrics return to baseline with 0 active error alerts.
-- [ ] Processing latency conforms to standard production SLAs.
-- [ ] Postmortem root cause documented and shared with architecture leads.
+## 4. Verification & Prevention
+- [ ] Confirm no long-lived static secret keys exist in repository secrets.
+- [ ] Verify Azure federated credential trust is bound strictly to `repo:<org>/<repo>:ref:refs/heads/main`.

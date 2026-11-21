@@ -1,8 +1,9 @@
-# 🚨 Production Runbook: Terraform / IaC State Lock & Resource Drift Disaster Recovery
+# 🚨 Production Runbook 01: Terraform State Lock Deadlock & Drift Disaster Recovery
 
-> **Severity**: `SEV-1`  
-> **Domain**: Data Platform Engineering & Operations  
-> **Key Focus**: Release stuck state locks, import out-of-band cloud modifications, and reconcile plan diffs.
+> **Incident Severity**: `SEV-1`  
+> **Domain**: Infrastructure as Code & Cloud Platform Engineering  
+> **Target Systems**: Terraform / OpenTofu, AWS S3 / DynamoDB, Azure Blob Storage  
+> **Objective**: Safely release deadlocked Terraform state locks, detect out-of-band resource drift, and restore CI/CD deployments.
 
 ---
 
@@ -10,58 +11,50 @@
 
 ```mermaid
 flowchart TD
-    Alert["🚨 Terraform / IaC State Lock & Resource Drift Disaster Recovery (SEV-1)"] --> TriageCategory{"Identify Root Cause Category"}
+    Alert["SEV-1 Alert: Terraform Apply Blocked by Error acquiring the state lock"] --> VerifyRunner["Step 1: Verify Active CI Runner Pipelines"]
+    VerifyRunner --> IsRunnerDead{"Is Locking CI Pipeline Still Running?"}
     
-    TriageCategory -->|"Configuration or Schema Drift"| ConfigTriage["Inspect Pipeline Schema & Type Contracts"]
-    TriageCategory -->|"Resource Starvation or OOM"| ResourceTriage["Inspect Memory Pools, Off-Heap State & GC"]
-    TriageCategory -->|"Network or Storage Timeout"| NetworkTriage["Inspect Downstream Latency & Deadlocks"]
-
-    ConfigTriage --> FixConfig["Remediation: Pin Schema Contracts & Apply Reversion"]
-    ResourceTriage --> FixResource["Remediation: Increase Worker Memory & Throttle Batch Slices"]
-    NetworkTriage --> FixNetwork["Remediation: Trigger Failover & Backoff Retry Strategy"]
+    IsRunnerDead -->|"Yes: Legitimate Deployment"| WaitPipeline["Wait for Active Runner to Complete"]
+    IsRunnerDead -->|"No: Crashed / Aborted Runner"| ForceUnlock["Step 2: Force Unlock Lock ID via CLI"]
+    
+    ForceUnlock --> RefreshState["Step 3: Run terraform refresh to Reconcile Drift"]
+    RefreshState --> PlanReview["Review terraform plan -detailed-exitcode"]
 ```
 
 ---
 
 ## 2. Immediate Diagnostic Procedures (First 5 Minutes)
 
-### Step 1: Query Error Signatures and Pipeline Metrics
-Run the following inspection commands to isolate the fault:
+### Step 1: Query Error Output for Lock ID and Locking Identity
 ```bash
-# Check pipeline task status and recent error traces
-echo "Inspecting error status for pipeline..."
-grep -E "ERROR|CRITICAL|Exception|Timeout" /var/log/pipeline.log | tail -n 25
+# Extract Lock ID from CI error message
+grep -A 5 "Error acquiring the state lock" /var/log/terraform/run.log
 ```
 
-### Step 2: Inspect Worker and State Health
-Check memory, disk saturation, and open file descriptors:
+### Step 2: Query DynamoDB Lock Table or Azure Blob Lease
 ```bash
-# Verify worker container resource utilization
-ps aux --sort=-%mem | head -n 10
+# AWS DynamoDB: Check lock item
+aws dynamodb get-item   --table-name "terraform-state-lock"   --key '{"LockID": {"S": "prod-lakehouse/terraform.tfstate"}}'
 ```
 
 ---
 
-## 3. Root Cause Analysis & Detailed Remediation
+## 3. Root Cause Analysis & Production Remediation
 
-### Primary Root Cause
-In production systems, this incident typically originates from sudden traffic surges, upstream breaking schema mutations, or resource limits being breached without backpressure.
+### Production Force Unlock & Safe Drift Reconciliation
+```bash
+# 1. Release orphaned state lock using the exact LockID from error output
+terraform force-unlock -force "9c8a4d2e-3f1b-4a5c-8d7e-9f0a1b2c3d4e"
 
-### Remediation & Recovery Strategy:
-1. **Apply Emergency Throttle**: Restrict incoming batch size or pause non-critical consumers.
-2. **Apply Hotfix Configuration**:
-   ```python
-   # Emergency throttle configuration
-   throttle_rate_per_sec = 5000
-   retry_backoff_multiplier = 2.0
-   max_retry_limit = 5
-   ```
-3. **Execute Recovery Step**: Re-run the validation test suite and verify consumer convergence.
+# 2. Refresh state to detect any out-of-band portal changes
+terraform refresh
+
+# 3. Generate detailed execution plan
+terraform plan -out=tfplan.binary -detailed-exitcode
+```
 
 ---
 
-## 4. Verification & Prevention Checklist
-
-- [ ] Pipeline metrics return to baseline with 0 active error alerts.
-- [ ] Processing latency conforms to standard production SLAs.
-- [ ] Postmortem root cause documented and shared with architecture leads.
+## 4. Verification & Prevention
+- [ ] Confirm `terraform plan` executes without state lock contention.
+- [ ] Ensure CI runners configure job timeouts ($\le 60	ext{ minutes}$) to prevent orphaned leases.
