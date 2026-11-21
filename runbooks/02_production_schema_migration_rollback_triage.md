@@ -1,8 +1,9 @@
-# 🚨 Production Runbook: Failed Production Schema Migration & Emergency Rollback
+# 🚨 Production Runbook 02: Database Schema Migration Rollback & Lock Triage
 
-> **Severity**: `SEV-1`  
-> **Domain**: Data Platform Engineering & Operations  
-> **Key Focus**: Perform zero-downtime rollback of breaking table migrations without dropping consumer data.
+> **Incident Severity**: `SEV-1`  
+> **Domain**: DataOps & Relational Schema Migrations  
+> **Target Systems**: PostgreSQL, MySQL, Flyway, Liquibase, Alembic  
+> **Objective**: Clear failed migration locks, revert non-breaking DDL, and apply forward-only recovery.
 
 ---
 
@@ -10,58 +11,48 @@
 
 ```mermaid
 flowchart TD
-    Alert["🚨 Failed Production Schema Migration & Emergency Rollback (SEV-1)"] --> TriageCategory{"Identify Root Cause Category"}
+    Alert["SEV-1 Alert: Migration Stalled or Failed on Production Database"] --> CheckLock["Step 1: Check Migration Lock Table (flyway_schema_history)"]
+    CheckLock --> IsLocked{"Is Migration Locked?"}
     
-    TriageCategory -->|"Configuration or Schema Drift"| ConfigTriage["Inspect Pipeline Schema & Type Contracts"]
-    TriageCategory -->|"Resource Starvation or OOM"| ResourceTriage["Inspect Memory Pools, Off-Heap State & GC"]
-    TriageCategory -->|"Network or Storage Timeout"| NetworkTriage["Inspect Downstream Latency & Deadlocks"]
-
-    ConfigTriage --> FixConfig["Remediation: Pin Schema Contracts & Apply Reversion"]
-    ResourceTriage --> FixResource["Remediation: Increase Worker Memory & Throttle Batch Slices"]
-    NetworkTriage --> FixNetwork["Remediation: Trigger Failover & Backoff Retry Strategy"]
+    IsLocked -->|"Yes: Stalled Lock"| UnlockMigration["Release Migration Lock & Terminate Hanging DDL"]
+    IsLocked -->|"No: Failed Execution"| EvaluateDDL["Evaluate Transactional vs Non-Transactional DDL"]
+    
+    UnlockMigration --> ForwardOnlyFix["Apply Forward-Only Non-Destructive Expand/Contract Migration"]
+    EvaluateDDL --> ForwardOnlyFix
 ```
 
 ---
 
 ## 2. Immediate Diagnostic Procedures (First 5 Minutes)
 
-### Step 1: Query Error Signatures and Pipeline Metrics
-Run the following inspection commands to isolate the fault:
-```bash
-# Check pipeline task status and recent error traces
-echo "Inspecting error status for pipeline..."
-grep -E "ERROR|CRITICAL|Exception|Timeout" /var/log/pipeline.log | tail -n 25
-```
-
-### Step 2: Inspect Worker and State Health
-Check memory, disk saturation, and open file descriptors:
-```bash
-# Verify worker container resource utilization
-ps aux --sort=-%mem | head -n 10
+### Step 1: Query Migration History Table for Failed Scripts
+```sql
+-- Flyway: Inspect latest failed migration
+SELECT installed_rank, version, description, type, script, installed_by, installed_on, execution_time, success
+FROM flyway_schema_history
+ORDER BY installed_rank DESC
+LIMIT 5;
 ```
 
 ---
 
-## 3. Root Cause Analysis & Detailed Remediation
+## 3. Root Cause Analysis & Production Remediation
 
-### Primary Root Cause
-In production systems, this incident typically originates from sudden traffic surges, upstream breaking schema mutations, or resource limits being breached without backpressure.
+### Production Expand / Contract Migration Pattern
+```sql
+-- Phase 1: Expand (Add new nullable column, do NOT drop old column)
+ALTER TABLE customers ADD COLUMN phone_e164 VARCHAR(32);
 
-### Remediation & Recovery Strategy:
-1. **Apply Emergency Throttle**: Restrict incoming batch size or pause non-critical consumers.
-2. **Apply Hotfix Configuration**:
-   ```python
-   # Emergency throttle configuration
-   throttle_rate_per_sec = 5000
-   retry_backoff_multiplier = 2.0
-   max_retry_limit = 5
-   ```
-3. **Execute Recovery Step**: Re-run the validation test suite and verify consumer convergence.
+-- Phase 2: Dual Write (Application writes to both phone and phone_e164)
+-- Phase 3: Backfill historical data in batches
+UPDATE customers SET phone_e164 = phone WHERE phone_e164 IS NULL;
+
+-- Phase 4: Contract (Drop old column after all consumers migrated)
+-- ALTER TABLE customers DROP COLUMN phone;
+```
 
 ---
 
-## 4. Verification & Prevention Checklist
-
-- [ ] Pipeline metrics return to baseline with 0 active error alerts.
-- [ ] Processing latency conforms to standard production SLAs.
-- [ ] Postmortem root cause documented and shared with architecture leads.
+## 4. Verification & Prevention
+- [ ] Run `flyway repair` to align schema checksums.
+- [ ] Never execute destructive DDL (`DROP COLUMN`, `ALTER TYPE`) in single-step migrations.

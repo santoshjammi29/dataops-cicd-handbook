@@ -1,8 +1,9 @@
-# 🚨 Production Runbook: Observability Alert Fatigue & Threshold Tuning Runbook
+# 🚨 Production Runbook 06: Data Observability Alert Fatigue & Dynamic Threshold Tuning
 
-> **Severity**: `SEV-2`  
-> **Domain**: Data Platform Engineering & Operations  
-> **Key Focus**: Adjust sliding dynamic baseline algorithms, tune anomaly sensitivities, and eliminate alert noise.
+> **Incident Severity**: `SEV-2`  
+> **Domain**: Data Observability & Monitoring  
+> **Target Systems**: Datadog, Prometheus, Monte Carlo, Elementary  
+> **Objective**: Replace brittle static threshold monitors with dynamic statistical anomaly detection.
 
 ---
 
@@ -10,58 +11,50 @@
 
 ```mermaid
 flowchart TD
-    Alert["🚨 Observability Alert Fatigue & Threshold Tuning Runbook (SEV-2)"] --> TriageCategory{"Identify Root Cause Category"}
+    Alert["SEV-2 Alert: On-Call Engineer Alert Fatigue (> 20 False Alarms/Day)"] --> AnalyzeAlerts["Step 1: Categorize High-Volume False Positive Monitors"]
+    AnalyzeAlerts --> MonitorType{"Monitor Type?"}
     
-    TriageCategory -->|"Configuration or Schema Drift"| ConfigTriage["Inspect Pipeline Schema & Type Contracts"]
-    TriageCategory -->|"Resource Starvation or OOM"| ResourceTriage["Inspect Memory Pools, Off-Heap State & GC"]
-    TriageCategory -->|"Network or Storage Timeout"| NetworkTriage["Inspect Downstream Latency & Deadlocks"]
-
-    ConfigTriage --> FixConfig["Remediation: Pin Schema Contracts & Apply Reversion"]
-    ResourceTriage --> FixResource["Remediation: Increase Worker Memory & Throttle Batch Slices"]
-    NetworkTriage --> FixNetwork["Remediation: Trigger Failover & Backoff Retry Strategy"]
+    MonitorType -->|"Static Row Count Threshold"| StaticVolume["Static Count Fails on Weekends / Holidays"]
+    MonitorType -->|"Static Freshness Threshold"| StaticFreshness["Freshness Threshold Misses Batch Cadence"]
+    
+    StaticVolume --> DynamicIQR["Switch to 14-Day Moving Average & Interquartile Range (IQR)"]
+    StaticFreshness --> DynamicFreshness["Configure Schedule-Aware SLA Windows"]
 ```
 
 ---
 
 ## 2. Immediate Diagnostic Procedures (First 5 Minutes)
 
-### Step 1: Query Error Signatures and Pipeline Metrics
-Run the following inspection commands to isolate the fault:
+### Step 1: Query Alert Volume by Monitor Rule
 ```bash
-# Check pipeline task status and recent error traces
-echo "Inspecting error status for pipeline..."
-grep -E "ERROR|CRITICAL|Exception|Timeout" /var/log/pipeline.log | tail -n 25
-```
-
-### Step 2: Inspect Worker and State Health
-Check memory, disk saturation, and open file descriptors:
-```bash
-# Verify worker container resource utilization
-ps aux --sort=-%mem | head -n 10
+# Inspect top firing alerts over the past 7 days
+curl -s -H "DD-API-KEY: $DD_API_KEY" "https://api.datadoghq.com/api/v1/monitor" | jq '.[] | {name: .name, query: .query}'
 ```
 
 ---
 
-## 3. Root Cause Analysis & Detailed Remediation
+## 3. Root Cause Analysis & Production Remediation
 
-### Primary Root Cause
-In production systems, this incident typically originates from sudden traffic surges, upstream breaking schema mutations, or resource limits being breached without backpressure.
+### Python Dynamic Volume Anomaly Detection (IQR Algorithm)
+```python
+import numpy as np
 
-### Remediation & Recovery Strategy:
-1. **Apply Emergency Throttle**: Restrict incoming batch size or pause non-critical consumers.
-2. **Apply Hotfix Configuration**:
-   ```python
-   # Emergency throttle configuration
-   throttle_rate_per_sec = 5000
-   retry_backoff_multiplier = 2.0
-   max_retry_limit = 5
-   ```
-3. **Execute Recovery Step**: Re-run the validation test suite and verify consumer convergence.
+def detect_volume_anomaly(historical_counts: list[int], current_count: int) -> bool:
+    """
+    Computes IQR boundaries over 14-day history, accounting for weekly seasonality.
+    """
+    q75, q25 = np.percentile(historical_counts, [75, 25])
+    iqr = q75 - q25
+    
+    lower_bound = max(0, q25 - (1.5 * iqr))
+    upper_bound = q75 + (1.5 * iqr)
+    
+    is_anomaly = current_count < lower_bound or current_count > upper_bound
+    return is_anomaly, lower_bound, upper_bound
+```
 
 ---
 
-## 4. Verification & Prevention Checklist
-
-- [ ] Pipeline metrics return to baseline with 0 active error alerts.
-- [ ] Processing latency conforms to standard production SLAs.
-- [ ] Postmortem root cause documented and shared with architecture leads.
+## 4. Verification & Prevention
+- [ ] Confirm false positive alert rate drops by $> 80\%$.
+- [ ] Require all monitors to pass through a 7-day silent observation period before paging on-call.

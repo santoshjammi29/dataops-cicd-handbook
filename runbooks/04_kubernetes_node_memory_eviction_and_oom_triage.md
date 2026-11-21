@@ -1,8 +1,9 @@
-# 🚨 Production Runbook: K8s Node Memory Eviction & Data Worker Pod Triage
+# 🚨 Production Runbook 04: Kubernetes Worker OOMKilled & Pod Eviction Triage
 
-> **Severity**: `SEV-1`  
-> **Domain**: Data Platform Engineering & Operations  
-> **Key Focus**: Diagnose Pod Eviction, OOMKilled, ephemeralkeys, and tuning requests/limits on data nodes.
+> **Incident Severity**: `SEV-1`  
+> **Domain**: Kubernetes & Distributed Data Infrastructure  
+> **Target Systems**: Kubernetes Cluster (EKS / AKS / GKE), Airflow Celery/K8s Workers, Spark on K8s  
+> **Objective**: Diagnose Exit Code 137 (OOMKilled) pod crashes and configure JVM cgroup memory caps.
 
 ---
 
@@ -10,58 +11,53 @@
 
 ```mermaid
 flowchart TD
-    Alert["🚨 K8s Node Memory Eviction & Data Worker Pod Triage (SEV-1)"] --> TriageCategory{"Identify Root Cause Category"}
+    Alert["SEV-1 Alert: Kubernetes Worker Pod Terminated with ExitCode 137"] --> InspectPod["Step 1: Run kubectl describe pod"]
+    InspectPod --> ReasonCheck{"Termination Reason?"}
     
-    TriageCategory -->|"Configuration or Schema Drift"| ConfigTriage["Inspect Pipeline Schema & Type Contracts"]
-    TriageCategory -->|"Resource Starvation or OOM"| ResourceTriage["Inspect Memory Pools, Off-Heap State & GC"]
-    TriageCategory -->|"Network or Storage Timeout"| NetworkTriage["Inspect Downstream Latency & Deadlocks"]
-
-    ConfigTriage --> FixConfig["Remediation: Pin Schema Contracts & Apply Reversion"]
-    ResourceTriage --> FixResource["Remediation: Increase Worker Memory & Throttle Batch Slices"]
-    NetworkTriage --> FixNetwork["Remediation: Trigger Failover & Backoff Retry Strategy"]
+    ReasonCheck -->|"OOMKilled (Exit Code 137)"| MemoryEviction["Pod Exceeded spec.resources.limits.memory"]
+    ReasonCheck -->|"Node Eviction (DiskPressure)"| DiskEviction["Node Ephemeral Storage Full"]
+    
+    MemoryEviction --> TuneJVM["Set -XX:MaxRAMPercentage=75.0 & Increase Memory Limit"]
+    DiskEviction --> CleanLogs["Prune Docker Container Images & Spark Local Scratch Dirs"]
 ```
 
 ---
 
 ## 2. Immediate Diagnostic Procedures (First 5 Minutes)
 
-### Step 1: Query Error Signatures and Pipeline Metrics
-Run the following inspection commands to isolate the fault:
+### Step 1: Inspect Pod Last Termination State
 ```bash
-# Check pipeline task status and recent error traces
-echo "Inspecting error status for pipeline..."
-grep -E "ERROR|CRITICAL|Exception|Timeout" /var/log/pipeline.log | tail -n 25
-```
-
-### Step 2: Inspect Worker and State Health
-Check memory, disk saturation, and open file descriptors:
-```bash
-# Verify worker container resource utilization
-ps aux --sort=-%mem | head -n 10
+kubectl describe pod <pod-name> -n airflow | grep -A 8 "Last State"
 ```
 
 ---
 
-## 3. Root Cause Analysis & Detailed Remediation
+## 3. Root Cause Analysis & Production Remediation
 
-### Primary Root Cause
-In production systems, this incident typically originates from sudden traffic surges, upstream breaking schema mutations, or resource limits being breached without backpressure.
-
-### Remediation & Recovery Strategy:
-1. **Apply Emergency Throttle**: Restrict incoming batch size or pause non-critical consumers.
-2. **Apply Hotfix Configuration**:
-   ```python
-   # Emergency throttle configuration
-   throttle_rate_per_sec = 5000
-   retry_backoff_multiplier = 2.0
-   max_retry_limit = 5
-   ```
-3. **Execute Recovery Step**: Re-run the validation test suite and verify consumer convergence.
+### Production Kubernetes Pod Configuration with JVM CGroup Support
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: airflow-worker-pod
+spec:
+  containers:
+    - name: worker
+      image: apache/airflow:2.9.1-python3.11
+      env:
+        - name: JAVA_TOOL_OPTIONS
+          value: "-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -XX:+ExitOnOutOfMemoryError"
+      resources:
+        requests:
+          memory: "4Gi"
+          cpu: "2"
+        limits:
+          memory: "8Gi"
+          cpu: "4"
+```
 
 ---
 
-## 4. Verification & Prevention Checklist
-
-- [ ] Pipeline metrics return to baseline with 0 active error alerts.
-- [ ] Processing latency conforms to standard production SLAs.
-- [ ] Postmortem root cause documented and shared with architecture leads.
+## 4. Verification & Prevention
+- [ ] Verify worker pod stabilizes and does not restart during peak batch transformations.
+- [ ] Set Grafana alert on `container_memory_usage_bytes / container_spec_memory_limit_bytes > 0.85`.
