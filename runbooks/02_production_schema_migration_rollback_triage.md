@@ -13,10 +13,10 @@
 flowchart TD
     Alert["SEV-1 Alert: Migration Stalled or Failed on Production Database"] --> CheckLock["Step 1: Check Migration Lock Table (flyway_schema_history)"]
     CheckLock --> IsLocked{"Is Migration Locked?"}
-    
+
     IsLocked -->|"Yes: Stalled Lock"| UnlockMigration["Release Migration Lock & Terminate Hanging DDL"]
     IsLocked -->|"No: Failed Execution"| EvaluateDDL["Evaluate Transactional vs Non-Transactional DDL"]
-    
+
     UnlockMigration --> ForwardOnlyFix["Apply Forward-Only Non-Destructive Expand/Contract Migration"]
     EvaluateDDL --> ForwardOnlyFix
 ```

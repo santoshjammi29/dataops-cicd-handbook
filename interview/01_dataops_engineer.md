@@ -957,10 +957,10 @@ from pyspark.sql import SparkSession
 def run_idempotent_partition_load(spark: SparkSession, raw_df, target_path: str, date_key: str):
     # Enforce dynamic partition overwrite to replace only the specific execution partition
     spark.conf.set('spark.sql.sources.partitionOverwriteMode', 'dynamic')
-    
+
     # Filter strictly for the execution target slice
     processed_df = raw_df.filter(raw_df.ingest_date == date_key)
-    
+
     # Atomic write replaces target partition without duplicating historical data
     processed_df.write \
         .mode('overwrite') \
