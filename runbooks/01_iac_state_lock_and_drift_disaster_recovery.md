@@ -13,10 +13,10 @@
 flowchart TD
     Alert["SEV-1 Alert: Terraform Apply Blocked by Error acquiring the state lock"] --> VerifyRunner["Step 1: Verify Active CI Runner Pipelines"]
     VerifyRunner --> IsRunnerDead{"Is Locking CI Pipeline Still Running?"}
-    
+
     IsRunnerDead -->|"Yes: Legitimate Deployment"| WaitPipeline["Wait for Active Runner to Complete"]
     IsRunnerDead -->|"No: Crashed / Aborted Runner"| ForceUnlock["Step 2: Force Unlock Lock ID via CLI"]
-    
+
     ForceUnlock --> RefreshState["Step 3: Run terraform refresh to Reconcile Drift"]
     RefreshState --> PlanReview["Review terraform plan -detailed-exitcode"]
 ```

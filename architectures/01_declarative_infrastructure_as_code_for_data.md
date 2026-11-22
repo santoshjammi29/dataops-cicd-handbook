@@ -1,14 +1,10 @@
 # 🏛️ Architecture: Declarative Data Infrastructure as Code (IaC)
 
-
 ![Databricks Asset Bundles (DABs) & Serverless CI/CD Architecture](../assets/whiteboards/databricks_dabs_devops_pipeline.webp)
 > *Architectural Blueprint: [Databricks Asset Bundles (DABs) & Serverless CI/CD Architecture](../docs/whiteboard_diagrams/README.md#databricks-dabs-devops-pipeline). View full multi-persona breakdown and engine mechanisms in the master index.*
 
-
 ![Enterprise Lakehouse CI/CD Multi-Environment Promotion & Rollback Flow](../assets/whiteboards/lakehouse_cicd_promotion_lifecycle_architecture.webp)
 > *Architectural Blueprint: [Enterprise Lakehouse CI/CD Multi-Environment Promotion & Rollback Flow](../docs/whiteboard_diagrams/README.md#lakehouse-cicd-promotion-lifecycle). View full multi-persona breakdown and engine mechanisms in the master index.*
-
-
 
 > **Domain**: Data Platform Engineering & Operations  
 > **Target Audience**: Senior Engineers, Data Architects, Platform Leads  

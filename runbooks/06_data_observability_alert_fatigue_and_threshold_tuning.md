@@ -13,10 +13,10 @@
 flowchart TD
     Alert["SEV-2 Alert: On-Call Engineer Alert Fatigue (> 20 False Alarms/Day)"] --> AnalyzeAlerts["Step 1: Categorize High-Volume False Positive Monitors"]
     AnalyzeAlerts --> MonitorType{"Monitor Type?"}
-    
+
     MonitorType -->|"Static Row Count Threshold"| StaticVolume["Static Count Fails on Weekends / Holidays"]
     MonitorType -->|"Static Freshness Threshold"| StaticFreshness["Freshness Threshold Misses Batch Cadence"]
-    
+
     StaticVolume --> DynamicIQR["Switch to 14-Day Moving Average & Interquartile Range (IQR)"]
     StaticFreshness --> DynamicFreshness["Configure Schedule-Aware SLA Windows"]
 ```
@@ -45,10 +45,10 @@ def detect_volume_anomaly(historical_counts: list[int], current_count: int) -> b
     """
     q75, q25 = np.percentile(historical_counts, [75, 25])
     iqr = q75 - q25
-    
+
     lower_bound = max(0, q25 - (1.5 * iqr))
     upper_bound = q75 + (1.5 * iqr)
-    
+
     is_anomaly = current_count < lower_bound or current_count > upper_bound
     return is_anomaly, lower_bound, upper_bound
 ```

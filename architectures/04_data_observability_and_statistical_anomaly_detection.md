@@ -1,14 +1,10 @@
 # 🏛️ Architecture: Data Observability & Statistical Anomaly Architecture
 
-
 ![Enterprise Lakehouse FinOps & Cloud Cost Optimization](../assets/whiteboards/lakehouse_finops_cost_optimization.webp)
 > *Architectural Blueprint: [Enterprise Lakehouse FinOps & Cloud Cost Optimization](../docs/whiteboard_diagrams/README.md#lakehouse-finops-cost-optimization). View full multi-persona breakdown and engine mechanisms in the master index.*
 
-
 ![Stateful Streaming Failure Recovery & Dead-Letter Queue (DLQ) Remediation](../assets/whiteboards/streaming_dlq_recovery_flow_architecture.webp)
 > *Architectural Blueprint: [Stateful Streaming Failure Recovery & Dead-Letter Queue (DLQ) Remediation](../docs/whiteboard_diagrams/README.md#streaming-dlq-recovery-flow). View full multi-persona breakdown and engine mechanisms in the master index.*
-
-
 
 > **Domain**: Data Platform Engineering & Operations  
 > **Target Audience**: Senior Engineers, Data Architects, Platform Leads  

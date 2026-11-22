@@ -13,10 +13,10 @@
 flowchart TD
     Alert["SEV-2 Alert: Pipeline Stalled by Quality Assertion Gate Failure"] --> InspectAssertion["Step 1: Inspect Assertion Failure Details"]
     InspectAssertion --> SeverityCheck{"Assertion Criticality?"}
-    
+
     SeverityCheck -->|"Critical Primary Key / NULL Violation"| QuarantineBatch["Trigger Circuit Breaker & Route Batch to Quarantine"]
     SeverityCheck -->|"Non-Critical Volume Variance"| WarnAndProceed["Emit Warning Alert & Allow Pipeline to Proceed"]
-    
+
     QuarantineBatch --> NotifyDataProductOwner["Dispatch Slack / PagerDuty Alert with Assertion Diagnostics"]
 ```
 
@@ -44,13 +44,13 @@ import requests
 def validate_silver_dataset(df):
     null_count = df.filter(df["order_id"].isNull()).count()
     total_count = df.count()
-    
+
     if null_count > 0:
         error_msg = f"❌ Quality Assertion Failed: Found {null_count} NULL order_ids out of {total_count} records."
         # Trigger Slack alert
         requests.post("https://hooks.slack.com/services/T00/B00/X00", json={"text": error_msg})
         raise AirflowFailException(error_msg)
-        
+
     return df
 ```
 

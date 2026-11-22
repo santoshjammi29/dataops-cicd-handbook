@@ -1,10 +1,7 @@
 # Module 06: Write-Audit-Publish (WAP) & Zero-Downtime Swaps
 
-
 ![Data Quality Observability & Write-Audit-Publish (WAP) Circuit Breaker Flow](../../assets/whiteboards/data_quality_wap_quarantine_architecture.webp)
 > *Architectural Blueprint: [Data Quality Observability & Write-Audit-Publish (WAP) Circuit Breaker Flow](../../docs/whiteboard_diagrams/README.md#data-quality-wap-quarantine). View full multi-persona breakdown and engine mechanisms in the master index.*
-
-
 
 ## 1. WAP Pattern Mechanics
 1. **Write**: Pipeline writes transformed data to an isolated branch or staging table.
@@ -26,7 +23,7 @@ INSERT INTO lakehouse.marts.fct_orders.branch_audit_branch_run_20261121
 SELECT * FROM staging.stg_orders;
 
 -- Step 3: Run Audit Assertions against the branch
-SELECT 
+SELECT
     COUNT(*) AS total_rows,
     SUM(CASE WHEN order_id IS NULL THEN 1 ELSE 0 END) AS null_order_ids,
     SUM(CASE WHEN order_total_usd < 0 THEN 1 ELSE 0 END) AS negative_totals
@@ -63,7 +60,7 @@ default_args = {
     tags=["wap", "dataops", "iceberg"]
 )
 def wap_orchestration_pipeline():
-    
+
     @task
     def create_staging_branch(table_name: str) -> str:
         branch_id = f"audit_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}"
@@ -91,15 +88,15 @@ def wap_orchestration_pipeline():
     # Dynamic Task Mapping over partition slices
     partitions = ["2026-11-20", "2026-11-21", "2026-11-22"]
     branch = create_staging_branch("fct_orders")
-    
+
     # Fan out writes across partitions
     staged_writes = write_staged_partitions.partial(
         table_name="fct_orders", branch_id=branch
     ).expand(partition_key=partitions)
-    
+
     # Audit all partition writes
     audited = audit_quality_gate.expand(write_result=staged_writes)
-    
+
     # Atomic swap once all audits succeed
     atomic_publish_swap("fct_orders", branch) << audited
 
