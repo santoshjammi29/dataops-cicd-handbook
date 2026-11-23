@@ -11,9 +11,9 @@
 
 ```mermaid
 flowchart TD
-    Alert["SEV-1 Alert: CI Secret Leaked in Build Logs or Compromised Runner"] --> RevokeCreds["Step 1: Immediately Invalidate Secret in Cloud IAM"]
-    RevokeCreds --> AuditLogs["Step 2: Query CloudTrail / Azure Activity Log for Misuse"]
-    AuditLogs --> MigrateOIDC["Step 3: Replace Static Secrets with Keyless OIDC Federation"]
+    Alert["SEV-1 Alert: CI Secret Leaked in<br/>Build Logs or Compromised Runner"] --> RevokeCreds["Step 1: Immediately Invalidate<br/>Secret in Cloud IAM"]
+    RevokeCreds --> AuditLogs["Step 2: Query CloudTrail / Azure<br/>Activity Log for Misuse"]
+    AuditLogs --> MigrateOIDC["Step 3: Replace Static Secrets<br/>with Keyless OIDC Federation"]
 ```
 
 ---

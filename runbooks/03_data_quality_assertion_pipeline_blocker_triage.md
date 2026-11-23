@@ -11,13 +11,13 @@
 
 ```mermaid
 flowchart TD
-    Alert["SEV-2 Alert: Pipeline Stalled by Quality Assertion Gate Failure"] --> InspectAssertion["Step 1: Inspect Assertion Failure Details"]
+    Alert["SEV-2 Alert: Pipeline Stalled by<br/>Quality Assertion Gate Failure"] --> InspectAssertion["Step 1: Inspect Assertion Failure<br/>Details"]
     InspectAssertion --> SeverityCheck{"Assertion Criticality?"}
 
-    SeverityCheck -->|"Critical Primary Key / NULL Violation"| QuarantineBatch["Trigger Circuit Breaker & Route Batch to Quarantine"]
-    SeverityCheck -->|"Non-Critical Volume Variance"| WarnAndProceed["Emit Warning Alert & Allow Pipeline to Proceed"]
+    SeverityCheck -->|"Critical Primary Key / NULL<br/>Violation"| QuarantineBatch["Trigger Circuit Breaker & Route<br/>Batch to Quarantine"]
+    SeverityCheck -->|"Non-Critical Volume Variance"| WarnAndProceed["Emit Warning Alert & Allow<br/>Pipeline to Proceed"]
 
-    QuarantineBatch --> NotifyDataProductOwner["Dispatch Slack / PagerDuty Alert with Assertion Diagnostics"]
+    QuarantineBatch --> NotifyDataProductOwner["Dispatch Slack / PagerDuty Alert<br/>with Assertion Diagnostics"]
 ```
 
 ---

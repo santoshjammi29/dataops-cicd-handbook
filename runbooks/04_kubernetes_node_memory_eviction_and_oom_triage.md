@@ -11,14 +11,14 @@
 
 ```mermaid
 flowchart TD
-    Alert["SEV-1 Alert: Kubernetes Worker Pod Terminated with ExitCode 137"] --> InspectPod["Step 1: Run kubectl describe pod"]
+    Alert["SEV-1 Alert: Kubernetes Worker Pod<br/>Terminated with ExitCode 137"] --> InspectPod["Step 1: Run kubectl describe pod"]
     InspectPod --> ReasonCheck{"Termination Reason?"}
 
-    ReasonCheck -->|"OOMKilled (Exit Code 137)"| MemoryEviction["Pod Exceeded spec.resources.limits.memory"]
+    ReasonCheck -->|"OOMKilled (Exit Code 137)"| MemoryEviction["Pod Exceeded<br/>spec.resources.limits.memory"]
     ReasonCheck -->|"Node Eviction (DiskPressure)"| DiskEviction["Node Ephemeral Storage Full"]
 
-    MemoryEviction --> TuneJVM["Set -XX:MaxRAMPercentage=75.0 & Increase Memory Limit"]
-    DiskEviction --> CleanLogs["Prune Docker Container Images & Spark Local Scratch Dirs"]
+    MemoryEviction --> TuneJVM["Set -XX:MaxRAMPercentage=75.0 &<br/>Increase Memory Limit"]
+    DiskEviction --> CleanLogs["Prune Docker Container Images &<br/>Spark Local Scratch Dirs"]
 ```
 
 ---

@@ -21,7 +21,7 @@ flowchart TD
         S2["Contract & Metadata Registry"]
     end
 
-    subgraph Engine["2. Core Execution Engine (Data Platform Engineering & Operations)"]
+    subgraph Engine["2. Core Execution Engine (Data Platform<br/>Engineering & Operations)"]
         P1["Parser & Semantic Analyzer"]
         DAG["Topological DAG Scheduler"]
         Exec["Physical Execution & State Backend"]
@@ -95,14 +95,14 @@ flowchart TD
     end
 
     subgraph Audit["Audit Stage: Automated Quality Gates"]
-        GX["Great Expectations / Soda Core Validation"]
-        LHMon["Lakehouse Monitoring: Data Drift & Null Ratio Profiling"]
-        Breaker{"Circuit Breaker Evaluation: Any Fatal Anomalies?"}
+        GX["Great Expectations / Soda Core<br/>Validation"]
+        LHMon["Lakehouse Monitoring: Data Drift &<br/>Null Ratio Profiling"]
+        Breaker{"Circuit Breaker Evaluation: Any<br/>Fatal Anomalies?"}
     end
 
     subgraph Publish["Publish Stage: Atomic Fast-Forward Swap"]
-        LiveProd["Swap to Production Table (Zero-Downtime)"]
-        DLQ["Quarantine to DLQ & Trigger PagerDuty Alert"]
+        LiveProd["Swap to Production Table<br/>(Zero-Downtime)"]
+        DLQ["Quarantine to DLQ & Trigger<br/>PagerDuty Alert"]
     end
 
     Ingest --> GX & LHMon --> Breaker

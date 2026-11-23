@@ -21,7 +21,7 @@ flowchart TD
         S2["Contract & Metadata Registry"]
     end
 
-    subgraph Engine["2. Core Execution Engine (Data Platform Engineering & Operations)"]
+    subgraph Engine["2. Core Execution Engine (Data Platform<br/>Engineering & Operations)"]
         P1["Parser & Semantic Analyzer"]
         DAG["Topological DAG Scheduler"]
         Exec["Physical Execution & State Backend"]
@@ -91,18 +91,18 @@ Modern DataOps deploys pipelines, serverless compute, and Databricks Apps declar
 ```mermaid
 flowchart LR
     subgraph Repo["Git Repository"]
-        DABConfig["databricks.yml (IaC Bundle Manifest)"]
+        DABConfig["databricks.yml (IaC Bundle<br/>Manifest)"]
         Pipelines["Pipeline YAML & Python Wheels"]
     end
 
     subgraph CI["GitHub Actions Runner"]
-        OIDC["OIDC Token Exchange (No Long-Lived Secrets)"]
+        OIDC["OIDC Token Exchange (No Long-Lived<br/>Secrets)"]
         Validate["databricks bundle validate -t prod"]
         Deploy["databricks bundle deploy -t prod"]
     end
 
     subgraph Workspace["Target Production Workspace"]
-        ServerlessJob["Serverless Lakeflow Job (Managed Fleet)"]
+        ServerlessJob["Serverless Lakeflow Job (Managed<br/>Fleet)"]
         DBSQL["Serverless SQL Warehouse Schedule"]
     end
 

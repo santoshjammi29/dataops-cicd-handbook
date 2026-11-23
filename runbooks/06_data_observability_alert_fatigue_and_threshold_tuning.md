@@ -11,14 +11,14 @@
 
 ```mermaid
 flowchart TD
-    Alert["SEV-2 Alert: On-Call Engineer Alert Fatigue (> 20 False Alarms/Day)"] --> AnalyzeAlerts["Step 1: Categorize High-Volume False Positive Monitors"]
+    Alert["SEV-2 Alert: On-Call Engineer<br/>Alert Fatigue (&gt; 20 False<br/>Alarms/Day)"] --> AnalyzeAlerts["Step 1: Categorize High-Volume<br/>False Positive Monitors"]
     AnalyzeAlerts --> MonitorType{"Monitor Type?"}
 
-    MonitorType -->|"Static Row Count Threshold"| StaticVolume["Static Count Fails on Weekends / Holidays"]
-    MonitorType -->|"Static Freshness Threshold"| StaticFreshness["Freshness Threshold Misses Batch Cadence"]
+    MonitorType -->|"Static Row Count Threshold"| StaticVolume["Static Count Fails on Weekends /<br/>Holidays"]
+    MonitorType -->|"Static Freshness Threshold"| StaticFreshness["Freshness Threshold Misses Batch<br/>Cadence"]
 
-    StaticVolume --> DynamicIQR["Switch to 14-Day Moving Average & Interquartile Range (IQR)"]
-    StaticFreshness --> DynamicFreshness["Configure Schedule-Aware SLA Windows"]
+    StaticVolume --> DynamicIQR["Switch to 14-Day Moving Average &<br/>Interquartile Range (IQR)"]
+    StaticFreshness --> DynamicFreshness["Configure Schedule-Aware SLA<br/>Windows"]
 ```
 
 ---
