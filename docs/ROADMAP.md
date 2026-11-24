@@ -28,10 +28,10 @@ Progress: [ ] 0 / 21 Completed (0.0%)
 <details>
 <summary>&nbsp;&nbsp;<b>🔴 Tier 4: Production Hardening & Staff Architecture (Level 400) (4 Drills)</b></summary>
 
-- [ ] `dataops-cicd-handbook-doc-01_declarative_infrastructure_as_code_for_data` — [Architecture: 01 Declarative Infrastructure As Code For Data](architectures/01_declarative_infrastructure_as_code_for_data.md) `L400`
-- [ ] `dataops-cicd-handbook-doc-02_kubernetes_operator_pattern_for_data_workloads` — [Architecture: 02 Kubernetes Operator Pattern For Data Workloads](architectures/02_kubernetes_operator_pattern_for_data_workloads.md) `L400`
-- [ ] `dataops-cicd-handbook-doc-03_automated_data_quality_gates_and_wap` — [Architecture: 03 Automated Data Quality Gates And Wap](architectures/03_automated_data_quality_gates_and_wap.md) `L400`
-- [ ] `dataops-cicd-handbook-doc-04_data_observability_and_statistical_anomaly_detection` — [Architecture: 04 Data Observability And Statistical Anomaly Detection](architectures/04_data_observability_and_statistical_anomaly_detection.md) `L400`
+- [ ] `dataops-cicd-handbook-doc-01_declarative_infrastructure_as_code_for_data` — [Architecture: 01 Declarative Infrastructure As Code For Data](../architectures/01_declarative_infrastructure_as_code_for_data.md) `L400`
+- [ ] `dataops-cicd-handbook-doc-02_kubernetes_operator_pattern_for_data_workloads` — [Architecture: 02 Kubernetes Operator Pattern For Data Workloads](../architectures/02_kubernetes_operator_pattern_for_data_workloads.md) `L400`
+- [ ] `dataops-cicd-handbook-doc-03_automated_data_quality_gates_and_wap` — [Architecture: 03 Automated Data Quality Gates And Wap](../architectures/03_automated_data_quality_gates_and_wap.md) `L400`
+- [ ] `dataops-cicd-handbook-doc-04_data_observability_and_statistical_anomaly_detection` — [Architecture: 04 Data Observability And Statistical Anomaly Detection](../architectures/04_data_observability_and_statistical_anomaly_detection.md) `L400`
 
 </details>
 
@@ -64,12 +64,12 @@ Progress: [ ] 0 / 21 Completed (0.0%)
 <details>
 <summary>&nbsp;&nbsp;<b>🔴 Tier 4: Production Hardening & Staff Architecture (Level 400) (6 Drills)</b></summary>
 
-- [ ] `dataops-cicd-handbook-rb-01_iac_state_lock_and_drift_disaster_recovery` — [Incident Runbook: Iac State Lock And Drift Disaster Recovery](runbooks/01_iac_state_lock_and_drift_disaster_recovery.md) `L400`
-- [ ] `dataops-cicd-handbook-rb-02_production_schema_migration_rollback_triage` — [Incident Runbook: Production Schema Migration Rollback Triage](runbooks/02_production_schema_migration_rollback_triage.md) `L400`
-- [ ] `dataops-cicd-handbook-rb-03_data_quality_assertion_pipeline_blocker_triage` — [Incident Runbook: Data Quality Assertion Pipeline Blocker Triage](runbooks/03_data_quality_assertion_pipeline_blocker_triage.md) `L400`
-- [ ] `dataops-cicd-handbook-rb-04_kubernetes_node_memory_eviction_and_oom_triage` — [Incident Runbook: Kubernetes Node Memory Eviction And Oom Triage](runbooks/04_kubernetes_node_memory_eviction_and_oom_triage.md) `L400`
-- [ ] `dataops-cicd-handbook-rb-05_ci_runner_credential_compromise_and_token_rotation` — [Incident Runbook: Ci Runner Credential Compromise And Token Rotation](runbooks/05_ci_runner_credential_compromise_and_token_rotation.md) `L400`
-- [ ] `dataops-cicd-handbook-rb-06_data_observability_alert_fatigue_and_threshold_tuning` — [Incident Runbook: Data Observability Alert Fatigue And Threshold Tuning](runbooks/06_data_observability_alert_fatigue_and_threshold_tuning.md) `L400`
+- [ ] `dataops-cicd-handbook-rb-01_iac_state_lock_and_drift_disaster_recovery` — [Incident Runbook: Iac State Lock And Drift Disaster Recovery](../runbooks/01_iac_state_lock_and_drift_disaster_recovery.md) `L400`
+- [ ] `dataops-cicd-handbook-rb-02_production_schema_migration_rollback_triage` — [Incident Runbook: Production Schema Migration Rollback Triage](../runbooks/02_production_schema_migration_rollback_triage.md) `L400`
+- [ ] `dataops-cicd-handbook-rb-03_data_quality_assertion_pipeline_blocker_triage` — [Incident Runbook: Data Quality Assertion Pipeline Blocker Triage](../runbooks/03_data_quality_assertion_pipeline_blocker_triage.md) `L400`
+- [ ] `dataops-cicd-handbook-rb-04_kubernetes_node_memory_eviction_and_oom_triage` — [Incident Runbook: Kubernetes Node Memory Eviction And Oom Triage](../runbooks/04_kubernetes_node_memory_eviction_and_oom_triage.md) `L400`
+- [ ] `dataops-cicd-handbook-rb-05_ci_runner_credential_compromise_and_token_rotation` — [Incident Runbook: Ci Runner Credential Compromise And Token Rotation](../runbooks/05_ci_runner_credential_compromise_and_token_rotation.md) `L400`
+- [ ] `dataops-cicd-handbook-rb-06_data_observability_alert_fatigue_and_threshold_tuning` — [Incident Runbook: Data Observability Alert Fatigue And Threshold Tuning](../runbooks/06_data_observability_alert_fatigue_and_threshold_tuning.md) `L400`
 
 </details>
 
