@@ -43,16 +43,16 @@ Progress: [ ] 0 / 21 Completed (0.0%)
 <details>
 <summary>&nbsp;&nbsp;<b>🟡 Tier 2: Core Mechanics & Implementation (Level 200) (10 Drills)</b></summary>
 
-- [ ] `dataops-cicd-handbook-01_gitops_and_trunk_based_development` — [Gitops And Trunk Based Development](modules/01_gitops_and_trunk_based_development/README.md) `L200`
-- [ ] `dataops-cicd-handbook-02_declarative_infrastructure_as_code` — [Declarative Infrastructure As Code](modules/02_declarative_infrastructure_as_code/README.md) `L200`
-- [ ] `dataops-cicd-handbook-03_automated_testing_and_data_diff` — [Automated Testing And Data Diff](modules/03_automated_testing_and_data_diff/README.md) `L200`
-- [ ] `dataops-cicd-handbook-04_slim_ci_and_state_deferral` — [Slim Ci And State Deferral](modules/04_slim_ci_and_state_deferral/README.md) `L200`
-- [ ] `dataops-cicd-handbook-05_pre_commit_linters_and_static_analysis` — [Pre Commit Linters And Static Analysis](modules/05_pre_commit_linters_and_static_analysis/README.md) `L200`
-- [ ] `dataops-cicd-handbook-06_write_audit_publish_and_blue_green` — [Write Audit Publish And Blue Green](modules/06_write_audit_publish_and_blue_green/README.md) `L200`
-- [ ] `dataops-cicd-handbook-07_kubernetes_and_containerized_compute` — [Kubernetes And Containerized Compute](modules/07_kubernetes_and_containerized_compute/README.md) `L200`
-- [ ] `dataops-cicd-handbook-08_secrets_management_and_oidc_workload_identity` — [Secrets Management And Oidc Workload Identity](modules/08_secrets_management_and_oidc_workload_identity/README.md) `L200`
-- [ ] `dataops-cicd-handbook-09_observability_sla_alerting_and_telemetry` — [Observability Sla Alerting And Telemetry](modules/09_observability_sla_alerting_and_telemetry/README.md) `L200`
-- [ ] `dataops-cicd-handbook-10_incident_management_and_post_mortem` — [Incident Management And Post Mortem](modules/10_incident_management_and_post_mortem/README.md) `L200`
+- [ ] `dataops-cicd-handbook-01_gitops_and_trunk_based_development` — [Gitops And Trunk Based Development](../modules/01_gitops_and_trunk_based_development/README.md) `L200`
+- [ ] `dataops-cicd-handbook-02_declarative_infrastructure_as_code` — [Declarative Infrastructure As Code](../modules/02_declarative_infrastructure_as_code/README.md) `L200`
+- [ ] `dataops-cicd-handbook-03_automated_testing_and_data_diff` — [Automated Testing And Data Diff](../modules/03_automated_testing_and_data_diff/README.md) `L200`
+- [ ] `dataops-cicd-handbook-04_slim_ci_and_state_deferral` — [Slim Ci And State Deferral](../modules/04_slim_ci_and_state_deferral/README.md) `L200`
+- [ ] `dataops-cicd-handbook-05_pre_commit_linters_and_static_analysis` — [Pre Commit Linters And Static Analysis](../modules/05_pre_commit_linters_and_static_analysis/README.md) `L200`
+- [ ] `dataops-cicd-handbook-06_write_audit_publish_and_blue_green` — [Write Audit Publish And Blue Green](../modules/06_write_audit_publish_and_blue_green/README.md) `L200`
+- [ ] `dataops-cicd-handbook-07_kubernetes_and_containerized_compute` — [Kubernetes And Containerized Compute](../modules/07_kubernetes_and_containerized_compute/README.md) `L200`
+- [ ] `dataops-cicd-handbook-08_secrets_management_and_oidc_workload_identity` — [Secrets Management And Oidc Workload Identity](../modules/08_secrets_management_and_oidc_workload_identity/README.md) `L200`
+- [ ] `dataops-cicd-handbook-09_observability_sla_alerting_and_telemetry` — [Observability Sla Alerting And Telemetry](../modules/09_observability_sla_alerting_and_telemetry/README.md) `L200`
+- [ ] `dataops-cicd-handbook-10_incident_management_and_post_mortem` — [Incident Management And Post Mortem](../modules/10_incident_management_and_post_mortem/README.md) `L200`
 
 </details>
 
@@ -81,7 +81,7 @@ Progress: [ ] 0 / 21 Completed (0.0%)
 <details>
 <summary>&nbsp;&nbsp;<b>🟡 Tier 2: Core Mechanics & Implementation (Level 200) (1 Drills)</b></summary>
 
-- [ ] `dataops-cicd-handbook-curriculum-topics` — [Topics Directory: DataOps & CI/CD Handbook](topics/README.md) `L200`
+- [ ] `dataops-cicd-handbook-curriculum-topics` — [Topics Directory: DataOps & CI/CD Handbook](../topics/README.md) `L200`
 
 </details>
 
